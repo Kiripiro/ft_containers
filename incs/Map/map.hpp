@@ -7,7 +7,6 @@
 #include "../Utils/utils.hpp"
 #include "RBT.hpp"
 #include "map_reverse_iterator.hpp"
-#include "../../tests/ft/map/mapPrint.hpp"
 
 namespace ft
 {
@@ -227,6 +226,8 @@ namespace ft
 				_root = _node_alloc.allocate(1);
 				_node_alloc.construct(_root, map_node(val));
 
+				_end->color = BLACK;
+				_rend->color = BLACK;
 				_root->color = BLACK;
 				_root->left = _rend;
 				_root->right = _end;
@@ -260,7 +261,6 @@ namespace ft
 			new_node = _node_alloc.allocate(1);
 			_node_alloc.construct(new_node, map_node(val));
 			new_node->parent = node;
-			//std::cout << "node to be inserted: " << new_node->value.first << std::endl;
 			if (_compare(node->value.first, val.first))
 			{
 				new_node->right = node->right;
@@ -278,7 +278,6 @@ namespace ft
 				node->left = new_node;
 			}
 			_size++;
-		//	std::cout << "node's parent: " << new_node->parent->value.first << std::endl;
 			if (new_node->parent != _root)
 				_insert_fix(new_node);
 			return ft::make_pair(new_node, true);
@@ -572,7 +571,6 @@ namespace ft
 
 		private:
 			void _rotate_left(map_node* x) {
-				//	std::cout << "RL" << std::endl;
 				map_node* y = x->right;
 				x->right = y->left;
 				if (y->left != nullptr) {
@@ -597,7 +595,6 @@ namespace ft
 			}
 
 			void _rotate_right(map_node* x) {
-				//	std::cout << "RR" << std::endl;
 				map_node* y = x->left;
 				x->left = y->right;
 				if (y->right != nullptr) {
@@ -622,60 +619,56 @@ namespace ft
 			}
 
 			void _insert_fix(map_node* node) {
-				map_node* 	uncle = 0;
-				map_node*	parent = node->parent;
-				map_node*	gparent = node->parent->parent;
-			//	std::cout << "_insert_fix, value: " << node->value.first << std::endl;
-			//	std::cout << "_insert_fix, color: " << node->color << std::endl;
-				while (node != _root && parent->color == RED) {
-					if (parent == gparent->left)
+				map_node* uncle;
+				while (node->parent->color == RED) {
+					if (node->parent == node->parent->parent->right)
 					{
-					//	std::cout << "A" << std::endl;
-						uncle = gparent->right;
+						uncle = node->parent->parent->left;
 						if (uncle && uncle->color == RED)
 						{
-						//	std::cout << "A1" << std::endl;
-							parent->color = BLACK;
 							uncle->color = BLACK;
-							gparent->color = RED;
-							node = gparent;
+							node->parent->color = BLACK;
+							node->parent->parent->color = RED;
+							node = node->parent->parent;
 						}
-						else if (node == parent->right)
+						else
 						{
-						//	std::cout << "A2" << std::endl;
-							node = parent;
-							_rotate_left(node);
-						}
-					//	std::cout << parent->value.first << std::endl;
-					//	std::cout << gparent->value.first << std::endl;
-						parent->color = BLACK;
-						gparent->color = RED;
-						_rotate_right(gparent);
-					} else {
-					//	std::cout << "B" << std::endl;
-						if (gparent->left && gparent->left->color == RED)
-						{
-							uncle = gparent->left;
-						//	std::cout << "B1" << std::endl;
-							parent->color = BLACK;
-							uncle->color = BLACK;
-							gparent->color = RED;
-							node = gparent;
-						}
-						else {
-						//	std::cout << "B2" << std::endl;
-							if (node == parent->left)
+							if (node == node->parent->left)
 							{
-								node = parent;
+								node = node->parent;
 								_rotate_right(node);
 							}
-							parent->color = BLACK;
-							gparent->color = RED;
-							_rotate_left(gparent);
+							node->parent->color = BLACK;
+							node->parent->parent->color = RED;
+							_rotate_left(node->parent->parent);
 						}
 					}
+					else
+					{
+						uncle = node->parent->parent->right;
+						if (uncle && uncle->color == 1)
+						{
+							uncle->color = BLACK;
+							node->parent->color = BLACK;
+							node->parent->parent->color = RED;
+							node = node->parent->parent;
+						}
+						else
+						{
+							if (node == node->parent->right)
+							{
+								node = node->parent;
+								_rotate_left(node);
+							}
+							node->parent->color = 0;
+							node->parent->parent->color = RED;
+							_rotate_right(node->parent->parent);
+						}
+					}
+					if (node == _root)
+						break;
 				}
-			_root->color = BLACK;
+				_root->color = BLACK;
 			}
 	};
 

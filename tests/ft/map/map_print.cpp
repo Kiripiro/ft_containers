@@ -1,9 +1,20 @@
 #include "../../../incs/Map/map.hpp"
 #include "../../../incs/Map/RBT.hpp"
 #include "../../../incs/Map/pair.hpp"
-#include "mapPrint.hpp"
 #include <map>
 #include <iostream>
+
+struct Trunk
+{
+	Trunk *prev;
+	std::string str;
+
+	Trunk(Trunk *prev, std::string str)
+	{
+		this->prev = prev;
+		this->str = str;
+	}
+};
 
 void showTrunks(Trunk *p)
 {
@@ -52,7 +63,7 @@ static void my_map_print()
 {
 	ft::map<int, int> mymap;
 
-	/*std::srand(std::time(nullptr));
+	std::srand(std::time(nullptr));
 	for (size_t i = 0; i < 11; i++)
 	{
 		int v1 = rand() % 100;
@@ -62,8 +73,8 @@ static void my_map_print()
 		ft::map<int,int>::map_node	*begin = mymap.get_root();
 			printTree(begin, nullptr, false);
 		std::cout << std::endl;
-	}*/
-	mymap[8] = 8;
+	}
+	/*mymap[8] = 8;
 	ft::map<int,int>::map_node	*begin = mymap.get_root();
 	printTree(begin, nullptr, false);
 	std::cout << std::endl;
@@ -93,7 +104,7 @@ static void my_map_print()
 	printTree(begin5, nullptr, false);
 	std::cout << std::endl;
 
-	/*mymap[54] = 54;
+	mymap[54] = 54;
 	ft::map<int,int>::map_node	*begin6 = mymap.get_root();
 	printTree(begin6, nullptr, false);
 	std::cout << std::endl;
@@ -113,15 +124,10 @@ static void my_map_print()
 	printTree(begin9, nullptr, false);
 	std::cout << std::endl;*/
 
-	//for (ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++)
-	//	std::cout << it->first << std::endl;
-	//ft::map<int, int>::iterator end = mymap.end();
-	//std::cout << end->first << std::endl;
 }
 
 void map_test()
 {
 	std::cout << "\x1B[92m------Map test------\033[0m" << std::endl;
 	my_map_print();
-	//std::cout << "test" << std::endl;
 }
