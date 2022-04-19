@@ -1,0 +1,11 @@
+INCLUDES += incs/Map/RBT.hpp
+INCLUDES += incs/Map/bidirectional_iterator.hpp
+INCLUDES += incs/Map/map.hpp
+INCLUDES += incs/Map/map_reverse_iterator.hpp
+INCLUDES += incs/Map/pair.hpp
+INCLUDES += incs/Stack/stack.hpp
+INCLUDES += incs/Utils/iterator_traits.hpp
+INCLUDES += incs/Utils/utils.hpp
+INCLUDES += incs/Vector/iterator.hpp
+INCLUDES += incs/Vector/reverse_iterator.hpp
+INCLUDES += incs/Vector/vector.hpp

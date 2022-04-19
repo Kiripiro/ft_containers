@@ -1,0 +1,116 @@
+86a87,201
+> first: a b c d
+> 
+> *first.clear()*
+> second: a b c d
+> 
+> third: a b c d
+> 
+> fourth: a b c d
+> 
+> 
+> [92m------Map capacity------[0m
+> map: ! hello world
+> map capacity: 3
+> second capacity: 3
+> map empty: 0
+> *second.clear()*
+> second empty: 1
+> 
+> 
+> [92m------Map insert------[0m
+> element 'z' already existed with a value of 200
+> mymap contains:
+> a => 100
+> b => 300
+> c => 400
+> z => 200
+> anothermap contains:
+> a => 100
+> b => 300
+> 
+> 
+> [92m------Map modifier------[0m
+> mymap.erase(it): a => 10, c => 30, d => 40, e => 50, f => 60, 
+> mymap.erase('c'): a => 10, d => 40, e => 50, f => 60, 
+> mymap.erase(it, mymap.end()): a => 10, d => 40, 
+> *foo.swap(mymap)*
+> foo contains: 
+> a => 10, d => 40, 
+> mymap contains: g => 70, h => 80, i => 90, j => 100, 
+> *mymap.clear*
+> mymap contains: 
+> 
+> 
+> [92m------Map observers------[0m
+> key_comp: mymap contains:
+> a => 100
+> b => 200
+> c => 300
+> 
+> value_comp: foo contains:
+> x => 1001
+> y => 2002
+> z => 3003
+> 
+> 
+> [92m------Map operations------[0m
+> foo.count('a'): 1
+> foo.count('g'): 0
+> 
+> it = foo.lower_bound(b): it: d, 200
+> it = foo.lower_bound(l): it: , 35321584
+> 
+> it = foo.upper_bound(d): it: k, 300
+> it = foo.upper_bound(l): it: , 35321584
+> 
+> ret = foo.equal_range(d): 
+> lower bound points to: d => 200
+> upper bound points to: k => 300
+> 
+> ret = foo.equal_range(d): 
+> lower bound points to:  => 35321584
+> 
+> 
+> [92m------Map iterator------[0m
+> a => 200
+> b => 100
+> c => 300
+> 
+> a => 200
+> b => 100
+> c => 300
+> 
+>  => 35321584
+> c => 300
+> b => 100
+> 
+> c => 300
+> b => 100
+> a => 200
+> 
+> c => 300
+> b => 100
+> a => 200
+> 
+> 
+> [92m------Map operator------[0m
+> alice == bob returns false
+> alice != bob returns true
+> alice <  bob returns true
+> alice <= bob returns true
+> alice >  bob returns false
+> alice >= bob returns false
+> 
+> alice == eve returns true
+> alice != eve returns false
+> alice <  eve returns false
+> alice <= eve returns true
+> alice >  eve returns false
+> alice >= eve returns true
+> 
+> *swap(alice, bob)*
+> alice contains: alice[7] = Z, alice[8] = Y, alice[9] = X, alice[10] = W, 
+> bob contains: bob[1] = a, bob[2] = b, bob[3] = c, 
+> 
+> 
