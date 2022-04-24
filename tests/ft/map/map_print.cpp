@@ -63,7 +63,7 @@ static void my_map_print()
 {
 	ft::map<int, int> mymap;
 
-	std::srand(std::time(nullptr));
+	/*std::srand(std::time(nullptr));
 	for (size_t i = 0; i < 11; i++)
 	{
 		int v1 = rand() % 100;
@@ -73,8 +73,8 @@ static void my_map_print()
 		ft::map<int,int>::map_node	*begin = mymap.get_root();
 			printTree(begin, nullptr, false);
 		std::cout << std::endl;
-	}
-	/*mymap[8] = 8;
+	}*/
+	mymap[8] = 8;
 	ft::map<int,int>::map_node	*begin = mymap.get_root();
 	printTree(begin, nullptr, false);
 	std::cout << std::endl;
@@ -122,7 +122,12 @@ static void my_map_print()
 	mymap[12] = 12;
 	ft::map<int,int>::map_node	*begin9 = mymap.get_root();
 	printTree(begin9, nullptr, false);
-	std::cout << std::endl;*/
+	std::cout << std::endl;
+
+	mymap.erase(88);
+	ft::map<int,int>::map_node	*begin10 = mymap.get_root();
+	printTree(begin10, nullptr, false);
+	std::cout << std::endl;
 
 }
 

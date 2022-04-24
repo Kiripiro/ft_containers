@@ -23,10 +23,6 @@ namespace ft {
 	struct is_integral<bool> : bool_wrapper<true> {};
 	template <>
 	struct is_integral<char> : bool_wrapper<true> {};
-//	template <>
-//	struct is_integral<char16_t> : bool_wrapper<true> {};
-//	template <>
-//	struct is_integral<char32_t> : bool_wrapper<true> {};
 	template <>
 	struct is_integral<wchar_t> : bool_wrapper<true> {};
 	template <>

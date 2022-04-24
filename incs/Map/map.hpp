@@ -114,12 +114,14 @@ namespace ft
 
 		map &operator= (const map &x)
 		{
-			this->clear();
+			if (this == &x)
+				return *this;
+			clear();
 			_compare = x._compare;
 			_size = 0;
 			_alloc = x._alloc;
 			_node_alloc = x._node_alloc;
-			this->insert(x.begin(), x.end());
+			insert(x.begin(), x.end());
 			return *this;
 		}
 
@@ -185,7 +187,7 @@ namespace ft
 
 		size_type max_size(void) const
 		{
-			return _alloc.max_size();
+			return std::numeric_limits<size_type>::max() / sizeof(map_node);
 		}
 
 /*
@@ -217,6 +219,7 @@ namespace ft
 
 		pair<iterator, bool>insert(const value_type &val)
 		{
+			std::cout << val.first << std::endl;
 			iterator	it;
 			map_node	*node;
 			map_node	*new_node;
@@ -301,90 +304,59 @@ namespace ft
 
 		void erase(iterator position)
 		{
-			map_node	*node;
-			map_node	*right;
-			map_node	*left;
-			map_node	*parent;
-			map_node	*next;
-
-			node = position.get_internal_pointer();
-			right = node->right;
-			left = node->left;
-			parent = node->parent;
-			next = node->next();
-			if (!right && !left)
-			{
-				if (parent->right == node)
-					parent->right = NULL;
-				else
-					parent->left = NULL;
-			}
-			else if (!right && left)
-			{
-				if (parent->right == node)
-					parent->right = left;
-				else
-					parent->left = left;
-				left->parent = parent;
-			}
-			else if (right && !left)
-			{
-				if (parent->right == node)
-					parent->right = right;
-				else
-					parent->left = right;
-				right->parent = parent;
-			}
-			else
-			{
-				if (next != node->right)
+				map_node *z;
+				z = position.get_internal_pointer();
+				map_node *y = z;
+				map_node *x;
+				
+				if (z == NULL)
+					return ;
+				int y_original_color = y->color;
+				if (z->left == NULL)
 				{
-					if (next->right)
+					x = z->right;
+					_swapNodes(z, z->right);
+				}
+				else if (z->right == NULL)
+				{
+					x = z->left;
+					_swapNodes(z, z->left);
+				}
+				else
+				{
+					y = find_min(z->right);
+					y_original_color = y->color;
+					x = y->right;
+					if (x != NULL && y->parent == z)
 					{
-						next->parent->left = next->right;
-						next->right->parent = next->parent;
+						x->parent = y;
 					}
-					if (!parent)
-						_root = next;
-					else if (parent->right == node)
-						parent->right = next;
-					else
-						parent->left = next;
-						if (next->parent->right == next)
-							next->parent->right = NULL;
-						else
-							next->parent->left = NULL;
-					next->parent = parent;
-					next->right = right;
-					next->left = left;
-					left->parent = next;
-					right->parent = next;
+					else if (z->right != NULL)
+					{
+						_swapNodes(y, y->right);
+						y->right = z->right;
+						if (z->right != NULL)
+							z->right->parent = y;
+					}
+					_swapNodes(z, y);
+					y->left = z->left;
+					if (y->left != NULL)
+						y->left->parent = y;
+					y->color = z->color;
 				}
-				else
+				delete z;
+				z = NULL;
+				_size--;
+				if (y == NULL && y->parent != _root)
 				{
-					if (!parent)
-						_root = next;
-					else if (parent->right == node)
-						parent->right = next;
-					else
-						parent->left = next;
-					left->parent = next;
-					next->parent = parent;
-					next->left = left;
+					y->parent->right = y->left;
+					y->left->parent = y->parent;
+					y->left = NULL;
+					y->right = NULL;
 				}
-			}
-			_node_alloc.destroy(node);
-			_node_alloc.deallocate(node, 1);
-			_size--;
-			if (_size == 0)
-			{
-				_root = NULL;
-				_rend->right = NULL;
-				_rend->left = NULL;
-				_end->right = NULL;
-				_end->left = NULL;
-				_rend->parent = _end;
-			}
+				if (y_original_color == BLACK && x != NULL)
+					_eraseCorrection(x);
+				return ;
 		}
 
 		size_type erase(const key_type &k)
@@ -570,6 +542,30 @@ namespace ft
 		}
 
 		private:
+			map_node *find_min(map_node *n)
+			{
+				assert(n != NULL);
+				map_node *tmp = n;
+				while (tmp->left != NULL)
+					tmp = tmp->left;
+				return tmp;
+			}
+
+			void _swapNodes(map_node *u, map_node *v)
+			{
+				if (u->parent == NULL)
+					_root = v;
+				else if (u == u->parent->left)
+					u->parent->left = v;
+				else
+					u->parent->right = v;
+				
+				if (u->parent == NULL)
+					v->parent = NULL;
+				else if (v != NULL)
+					v->parent = u->parent;
+			}
+
 			void _rotate_left(map_node* x) {
 				map_node* y = x->right;
 				x->right = y->left;
@@ -669,6 +665,93 @@ namespace ft
 						break;
 				}
 				_root->color = BLACK;
+			}
+
+			void _eraseCorrection(map_node *n)
+			{
+				map_node *tmp = n;
+				map_node *w = n;
+				map_node *p = tmp->parent;
+				while (tmp != _root && tmp->color == BLACK && w != NULL)
+				{
+					if (tmp == p->left)
+					{
+						w = p->right;
+
+						if (w != NULL && w->color == RED)
+						{
+							w->color = BLACK;
+							p->color = RED;
+							_rotate_left(p);
+							w = p->right;
+						}
+						if (w != NULL)
+						{
+							if ((w->left == NULL || w->left->color == BLACK) && (w->right == NULL || w->right->color == BLACK))
+							{
+								w->color = RED;
+								tmp = p;
+							}
+							else
+							{
+								if (w->right->color == BLACK)
+								{
+									w->left->color = BLACK;
+									w->color = RED;
+									_rotate_right(w);
+									w = p->right;
+								}
+
+								w->color = p->color;
+								p->color = BLACK;
+								w->right->color = BLACK;
+								_rotate_left(p);
+								tmp = _root;
+							}
+						}
+					}
+					else
+					{
+
+						w = p->left;
+
+						if (w != NULL && w->color == RED)
+						{
+							w->color = BLACK;
+							p->color = RED;
+							_rotate_right(p);
+							w = p->left;
+						}
+						if (w != NULL)
+						{
+							if ((w->left == NULL || w->left->color == BLACK) && (w->right == NULL || w->right->color == BLACK))
+							{
+								w->color = RED;
+								tmp = p;
+							}
+							else
+							{
+								if (w->left != NULL && w->left->color == BLACK)
+								{
+									if (w->right != NULL)
+										w->right->color = BLACK;
+									w->color = RED;
+									_rotate_left(w);
+									w = p->left;
+								}
+
+								w->color = p->color;
+								p->color = BLACK;
+								if (w->left != NULL)
+									w->left->color = BLACK;
+								_rotate_right(p);
+								tmp = _root;
+							}
+						}
+					}
+				}
+				if (tmp->color != -1)
+					tmp->color = BLACK;
 			}
 	};
 
