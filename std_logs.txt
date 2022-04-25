@@ -144,17 +144,17 @@ foo.count('a'): 1
 foo.count('g'): 0
 
 it = foo.lower_bound(b): it: d, 200
-it = foo.lower_bound(l): it: , 35321584
+it = foo.lower_bound(l): it: , 196667120
 
 it = foo.upper_bound(d): it: k, 300
-it = foo.upper_bound(l): it: , 35321584
+it = foo.upper_bound(l): it: , 196667120
 
 ret = foo.equal_range(d): 
 lower bound points to: d => 200
 upper bound points to: k => 300
 
 ret = foo.equal_range(d): 
-lower bound points to:  => 35321584
+lower bound points to:  => 196667120
 
 
 [92m------Map iterator------[0m
@@ -166,7 +166,7 @@ a => 200
 b => 100
 c => 300
 
- => 35321584
+ => 196667120
 c => 300
 b => 100
 

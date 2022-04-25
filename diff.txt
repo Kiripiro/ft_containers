@@ -1,4 +1,92 @@
-86a87,201
+1c1,201
+< leaks[37583]: [fatal] Unable to launch --atExit command './ft_containers': No such file or directory
+---
+> [92m------Vector constructor and copy------[0m
+> first: 0 1 2 3 4 5 6 
+> second: 0 1 2 3 4 5 
+> three: 0 1 2 3 4 5 6 7 
+> first.capacity: 10
+> first.size: 7
+> second.capacity: 6
+> second.size: 6
+> three.capacity: 8
+> three.size: 8
+> 
+> 
+> [92m------Vector iterator------[0m
+> iterator: 01234567
+> const_iterator: bonjour tout le monde !
+> reverse_iterator: 76543210
+> const_reverse_iterator: monde !le tout bonjour 
+> 
+> 
+> [92m------Vector capacity------[0m
+> max size: 768614336404564650
+> size: 3
+> capacity: 4
+> *vec.resize(10)*
+> size: 10
+> capacity: 10
+> *vec.reserve(15)*
+> capacity: 15
+> 
+> 
+> [92m------Vector access------[0m
+> All vector: Hello beautiful World so amazing !
+> size: 6
+> capacity: 8
+> front: Hello 
+> back: !
+> vec[4]: amazing 
+> vec[8](Out Of Range): 
+> vec.at(3): so 
+> vec.at(7)(Out Of Range): vector
+> 
+> 
+> [92m------Vector assign------[0m
+> first.assign(7, "Bonjour"): Bonjour, Bonjour, Bonjour, Bonjour, Bonjour, Bonjour, Bonjour, 
+> second.assign(first.begin(), first.end() - 1): Bonjour, Bonjour, Bonjour, Bonjour, Bonjour, Bonjour, 
+> tab[] = {54 89 1 }
+> third.assign(tab, tab + 3): 54, 89, 1, 
+> 
+> 
+> [92m------Vector modifier------[0m
+> myvector contains: 501 502 503 1201 400 400 400 300 200 100 100 100
+> push_back(42): 501 502 503 1201 400 400 400 300 200 100 100 100 42
+> pop_back(): 501 502 503 1201 400 400 400 300 200 100 100 100
+> erase(it + 3): 501 502 503 400 400 400 300 200 100 100 100
+> erase(it + 3, it + 6): 501 502 503 300 200 100 100 100
+> foo contains: Hello Hello Hello
+> bar contains: World World World World World
+> *swap*
+> foo contains: World World World World World
+> bar contains: Hello Hello Hello
+> clear myvector:
+> 
+> 
+> [92m------Vector operators------[0m
+> foo contains: Hello World !
+> bar contains: Bonjour Monde !
+> foo > bar: 1
+> foo < bar: 0
+> foo != bar: 1
+> *swap*
+> foo contains: Bonjour Monde !
+> bar contains: Hello World !
+> 
+> 
+> [92m------Stack Tester------[0m
+> stack empty: 1
+> *push*
+>  0 1 2 3 4 5 6 7 8 9
+> top: 9
+> *pop*
+> top: 8
+> size: 9
+> empty: 0
+> 
+> 
+> [92m------Map constructor and copy------[0m
 > first: a b c d
 > 
 > *first.clear()*
@@ -59,17 +147,17 @@
 > foo.count('g'): 0
 > 
 > it = foo.lower_bound(b): it: d, 200
-> it = foo.lower_bound(l): it: , 35321584
+> it = foo.lower_bound(l): it: , 196667120
 > 
 > it = foo.upper_bound(d): it: k, 300
-> it = foo.upper_bound(l): it: , 35321584
+> it = foo.upper_bound(l): it: , 196667120
 > 
 > ret = foo.equal_range(d): 
 > lower bound points to: d => 200
 > upper bound points to: k => 300
 > 
 > ret = foo.equal_range(d): 
-> lower bound points to:  => 35321584
+> lower bound points to:  => 196667120
 > 
 > 
 > [92m------Map iterator------[0m
@@ -81,7 +169,7 @@
 > b => 100
 > c => 300
 > 
->  => 35321584
+>  => 196667120
 > c => 300
 > b => 100
 > 
@@ -102,15 +190,4 @@
 > alice >  bob returns false
 > alice >= bob returns false
 > 
-> alice == eve returns true
-> alice != eve returns false
-> alice <  eve returns false
-> alice <= eve returns true
-> alice >  eve returns false
-> alice >= eve returns true
-> 
-> *swap(alice, bob)*
-> alice contains: alice[7] = Z, alice[8] = Y, alice[9] = X, alice[10] = W, 
-> bob contains: bob[1] = a, bob[2] = b, bob[3] = c, 
-> 
-> 
+> alice == eve retu

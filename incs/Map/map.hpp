@@ -219,7 +219,6 @@ namespace ft
 
 		pair<iterator, bool>insert(const value_type &val)
 		{
-			std::cout << val.first << std::endl;
 			iterator	it;
 			map_node	*node;
 			map_node	*new_node;
@@ -268,7 +267,7 @@ namespace ft
 			{
 				new_node->right = node->right;
 				if (new_node->right)
-				    new_node->right->parent = new_node;
+					new_node->right->parent = new_node;
 				new_node->left = NULL;
 				node->right = new_node;
 			}
@@ -308,7 +307,7 @@ namespace ft
 				z = position.get_internal_pointer();
 				map_node *y = z;
 				map_node *x;
-				
+
 				if (z == NULL)
 					return ;
 				int y_original_color = y->color;
@@ -559,7 +558,7 @@ namespace ft
 					u->parent->left = v;
 				else
 					u->parent->right = v;
-				
+
 				if (u->parent == NULL)
 					v->parent = NULL;
 				else if (v != NULL)
@@ -615,6 +614,8 @@ namespace ft
 			}
 
 			void _insert_fix(map_node* node) {
+				std::cout << "first: " << node->value.first << std::endl;
+				std::cout << "second: " << node->value.second << std::endl;
 				map_node* uncle;
 				while (node->parent->color == RED) {
 					if (node->parent == node->parent->parent->right)
@@ -677,7 +678,6 @@ namespace ft
 					if (tmp == p->left)
 					{
 						w = p->right;
-
 						if (w != NULL && w->color == RED)
 						{
 							w->color = BLACK;
@@ -701,7 +701,6 @@ namespace ft
 									_rotate_right(w);
 									w = p->right;
 								}
-
 								w->color = p->color;
 								p->color = BLACK;
 								w->right->color = BLACK;
@@ -712,9 +711,7 @@ namespace ft
 					}
 					else
 					{
-
 						w = p->left;
-
 						if (w != NULL && w->color == RED)
 						{
 							w->color = BLACK;
@@ -750,8 +747,7 @@ namespace ft
 						}
 					}
 				}
-				if (tmp->color != -1)
-					tmp->color = BLACK;
+				tmp->color = BLACK;
 			}
 	};
 
