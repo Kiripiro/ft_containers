@@ -1,6 +1,33 @@
 #include "../../../incs/Map/map.hpp"
 #include <map>
 #include <iostream>
+#include <list>
+
+void		test()
+{
+	std::list<ft::pair<int, int> > lst;
+	int lst_size = 7;
+	for (int i = 0; i < lst_size; ++i)
+		lst.push_back(ft::pair<int, int>(lst_size - i, i));
+
+	ft::map<int, int> mp(lst.begin(), lst.end());
+
+	ft::map<int, int>::iterator begin = mp.begin(), end = mp.end();
+	for (; begin != end; begin++)
+	{
+		std::cout << begin->first << std::endl;
+	}
+
+	ft::map<int, int>::iterator it = mp.begin(), ite = mp.end();
+	ft::map<int, int> mp_range(it, --(--ite));
+	for (int i = 0; it != ite; ++it)
+		it->second = ++i * 5;
+
+	it = mp.begin(); ite = --(--mp.end());
+	ft::map<int, int> mp_copy(mp);
+	for (int i = 0; it != ite; ++it)
+		it->second = ++i * 7;
+}
 
 static void my_map()
 {
@@ -13,7 +40,6 @@ static void my_map()
 	ft::map<char,int> second(first.begin(),first.end());
 	ft::map<char,int> third(first);
 	ft::map<char,int> fourth = third;
-
 
 	std::cout << "first:";
 	for (ft::map<char, int>::iterator it = first.begin(); it != first.end(); ++it)
@@ -33,6 +59,7 @@ static void my_map()
 	for (ft::map<char, int>::iterator it = fourth.begin(); it != fourth.end(); ++it)
 		std::cout << " " << it->first;
 	std::cout << std::endl;
+	//test();
 }
 
 void map_constructor()

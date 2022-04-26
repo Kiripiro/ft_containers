@@ -124,7 +124,7 @@ static void my_map_print()
 	printTree(begin9, nullptr, false);
 	std::cout << std::endl;
 
-	mymap.erase(88);
+	mymap.erase(50);
 	ft::map<int,int>::map_node	*begin10 = mymap.get_root();
 	printTree(begin10, nullptr, false);
 	std::cout << std::endl;

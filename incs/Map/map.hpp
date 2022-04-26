@@ -105,11 +105,12 @@ namespace ft
 
 		~map(void)
 		{
-			this->clear();
-			_node_alloc.destroy(_end);
-			_node_alloc.deallocate(_end, 1);
-			_node_alloc.destroy(_rend);
-			_node_alloc.deallocate(_rend, 1);
+			_destroy_from_root(_root);
+		//	if (_end)
+		//	{
+		//		std::cout << "A" << std::endl;
+		//		_delete_node(_end);
+		//	}
 		}
 
 		map &operator= (const map &x)
@@ -223,6 +224,7 @@ namespace ft
 			map_node	*node;
 			map_node	*new_node;
 
+		// 	std::cout << "_end " << _end << " " << "_rend" << _rend << std::endl;
 			if (!_root)
 			{
 				_root = _node_alloc.allocate(1);
@@ -405,7 +407,18 @@ namespace ft
 
 		void clear(void)
 		{
-			this->erase(this->begin(), this->end());
+			_destroy_from_root(_root);
+
+			_end = _node_alloc.allocate(1);
+			_node_alloc.construct(_end, map_node());
+			_end->color = BLACK;
+
+			_rend = _node_alloc.allocate(1);
+			_node_alloc.construct(_rend, map_node());
+			_rend->color = BLACK;
+			_rend->parent = _end;
+			_size = 0;
+		//	this->erase(this->begin(), this->end());
 		}
 /*
  * Observers
@@ -541,6 +554,35 @@ namespace ft
 		}
 
 		private:
+			void	_delete_node(map_node* node)
+			{
+				if (node){
+				//	std::cout << "_delete_node: " << node->value.first << std::endl;
+					_node_alloc.destroy(node);
+					_node_alloc.deallocate(node, 1);
+					_size--;
+					node = NULL;
+				}
+			}
+
+			void	_destroy_from_root(map_node* node)
+			{
+			//	std::cout << "node: " << node->value.first << std::endl;
+				if (empty())
+				{
+					_delete_node(_end);
+					_delete_node(_rend);
+				}
+				else if (node == _end || node == _rend)
+					_delete_node(node);
+				else if (node != NULL)
+				{
+					_destroy_from_root(node->left);
+					_destroy_from_root(node->right);
+					_delete_node(node);
+				}
+			}
+
 			map_node *find_min(map_node *n)
 			{
 				assert(n != NULL);
@@ -614,8 +656,6 @@ namespace ft
 			}
 
 			void _insert_fix(map_node* node) {
-				std::cout << "first: " << node->value.first << std::endl;
-				std::cout << "second: " << node->value.second << std::endl;
 				map_node* uncle;
 				while (node->parent->color == RED) {
 					if (node->parent == node->parent->parent->right)
