@@ -105,23 +105,28 @@ namespace ft
 
 		~map(void)
 		{
-			_destroy_from_root(_root);
-		//	if (_end)
-		//	{
-		//		std::cout << "A" << std::endl;
-		//		_delete_node(_end);
-		//	}
+			clear();
+			_node_alloc.destroy(_end);
+			_node_alloc.deallocate(_end, 1);
+			_node_alloc.destroy(_rend);
+			_node_alloc.deallocate(_rend, 1);
 		}
 
 		map &operator= (const map &x)
 		{
 			if (this == &x)
 				return *this;
-			clear();
-			_compare = x._compare;
-			_size = 0;
+			if (!empty())
+				_destroy_from_root(_root);
+			_node_alloc.destroy(_end);
+			_node_alloc.deallocate(_end, 1);
+			_node_alloc.destroy(_rend);
+			_node_alloc.deallocate(_rend, 1);
+			_init();
 			_alloc = x._alloc;
 			_node_alloc = x._node_alloc;
+			_compare = x._compare;
+			_size = 0;
 			insert(x.begin(), x.end());
 			return *this;
 		}
@@ -224,7 +229,6 @@ namespace ft
 			map_node	*node;
 			map_node	*new_node;
 
-		// 	std::cout << "_end " << _end << " " << "_rend" << _rend << std::endl;
 			if (!_root)
 			{
 				_root = _node_alloc.allocate(1);
@@ -377,7 +381,7 @@ namespace ft
 				return ;
 			to_delete = first;
 			erase(++first, last);
-			erase(to_delete);
+ 	 		erase(to_delete);
 		}
 
 		void swap(map &x)
@@ -407,19 +411,9 @@ namespace ft
 
 		void clear(void)
 		{
-			_destroy_from_root(_root);
-
-			_end = _node_alloc.allocate(1);
-			_node_alloc.construct(_end, map_node());
-			_end->color = BLACK;
-
-			_rend = _node_alloc.allocate(1);
-			_node_alloc.construct(_rend, map_node());
-			_rend->color = BLACK;
-			_rend->parent = _end;
-			_size = 0;
-		//	this->erase(this->begin(), this->end());
+			this->erase(this->begin(), this->end());
 		}
+
 /*
  * Observers
  */
@@ -483,10 +477,9 @@ namespace ft
 
 		iterator lower_bound(const key_type &k)
 		{
-			key_compare compare = key_compare();
 			for (iterator i = begin(); i != end(); i++)
 			{
-				if (!compare(i->first, k))
+				if (!_compare(i->first, k))
 					return (i);
 			}
 			return (end());
@@ -494,10 +487,9 @@ namespace ft
 
 		const_iterator lower_bound(const key_type &k) const
 		{
-			key_compare compare = key_compare();
 			for (const_iterator i = begin(); i != end(); i++)
 			{
-				if (!compare(i->first, k))
+				if (!_compare(i->first, k))
 					return (i);
 			}
 			return (end());
@@ -505,10 +497,9 @@ namespace ft
 
 		iterator upper_bound(const key_type &k)
 		{
-			key_compare compare = key_compare();
 			for (iterator i = begin(); i != end(); i++)
 			{
-				if (compare(k, i->first))
+				if (_compare(k, i->first))
 					return (i);
 			}
 			return (end());
@@ -516,10 +507,9 @@ namespace ft
 
 		const_iterator upper_bound(const key_type &k) const
 		{
-			key_compare compare = key_compare();
 			for (const_iterator i = begin(); i != end(); i++)
 			{
-				if (compare(k, i->first))
+				if (_compare(k, i->first))
 					return (i);
 			}
 			return (end());
@@ -554,27 +544,32 @@ namespace ft
 		}
 
 		private:
+			void	_init()
+			{
+				_end = _node_alloc.allocate(1);
+				_node_alloc.construct(_end, map_node());
+
+				_rend = _node_alloc.allocate(1);
+				_node_alloc.construct(_rend, map_node());
+				_rend->parent = _end;
+				_root = NULL;
+			}
+
 			void	_delete_node(map_node* node)
 			{
-				if (node){
-				//	std::cout << "_delete_node: " << node->value.first << std::endl;
-					_node_alloc.destroy(node);
-					_node_alloc.deallocate(node, 1);
-					_size--;
-					node = NULL;
-				}
+				_node_alloc.destroy(node);
+				_node_alloc.deallocate(node, 1);
+				_size--;
+				node = NULL;
 			}
 
 			void	_destroy_from_root(map_node* node)
 			{
-			//	std::cout << "node: " << node->value.first << std::endl;
-				if (empty())
+				if (empty() || node == _end)
 				{
-					_delete_node(_end);
 					_delete_node(_rend);
+					_delete_node(_end);
 				}
-				else if (node == _end || node == _rend)
-					_delete_node(node);
 				else if (node != NULL)
 				{
 					_destroy_from_root(node->left);

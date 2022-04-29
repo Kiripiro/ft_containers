@@ -1,6 +1,7 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
+
 #include "../Utils/utils.hpp"
 #include "../Utils/iterator_traits.hpp"
 #include "iterator.hpp"
@@ -141,11 +142,6 @@ namespace ft {
 		void reserve( size_type n ) {
 			if (n > max_size())
 				throw std::length_error::exception();
-			if (!capacity()) {
-				_i = _alloc.allocate(n);
-				_capacity = n;
-				return ;
-			}
 			if (n > _capacity) {
 				pointer tmp = _alloc.allocate(n);
 				for (size_type i = 0; i < _size; i++) {
@@ -247,12 +243,12 @@ namespace ft {
 		void push_back(const value_type& val) {
 			if (_size + 1 > capacity()) {
 				if (!capacity())
-					reserve(1);
-				else
-					reserve(capacity() * 2);
-			}
-			_alloc.construct(_i + _size, val);
-			_size++;
+						reserve(1);
+					else
+						reserve(capacity() * 2);
+        	}
+        	_alloc.construct(_i + _size, val);
+        	_size++;
 		}
 
 		void pop_back() {

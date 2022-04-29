@@ -4,7 +4,7 @@
 #include "../Vector/vector.hpp"
 
 namespace ft {
-	template <class T, class Container = vector<T> > class stack {
+	template <class T, class Container = ft::vector<T> > class stack {
 		public:
 			typedef Container									container_type;
     		typedef typename container_type::value_type			value_type;
@@ -17,8 +17,7 @@ namespace ft {
 
 		public:
 			explicit stack (const container_type& __q = container_type()): c(__q) {}
-			stack(const stack& __q) : c(__q.c) {}
-			~stack() { c.clear(); }
+			~stack() { }
 
 			stack& operator=(const stack& __q) {
 				c = __q.c;
@@ -41,8 +40,9 @@ namespace ft {
 				return c.back();
 			}
 
-			void	push(const value_type& _v) {
-				c.push_back(_v);
+			void push (const value_type& val)
+			{
+				c.push_back(val);
 			}
 
 			void	pop() {
