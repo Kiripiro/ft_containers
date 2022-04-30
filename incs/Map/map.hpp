@@ -118,10 +118,6 @@ namespace ft
 				return *this;
 			if (!empty())
 				_destroy_from_root(_root);
-			_node_alloc.destroy(_end);
-			_node_alloc.deallocate(_end, 1);
-			_node_alloc.destroy(_rend);
-			_node_alloc.deallocate(_rend, 1);
 			_init();
 			_alloc = x._alloc;
 			_node_alloc = x._node_alloc;
@@ -544,6 +540,21 @@ namespace ft
 		}
 
 		private:
+			void print_tree_structure(map_node *node, int spaces)
+			{
+				if (node != NULL)
+				{
+					print_tree_structure(node->right, spaces + 5);
+					for (int i = 0; i < spaces; i++)
+						std::cout << ' ';
+						if (node->color == RED)
+							std::cout << "  \033[31m" << node->value.first << "\033[0m" << std::endl;
+						else
+							std::cout << "   " << node->value.first << std::endl;
+					print_tree_structure(node->left, spaces + 5);
+				}
+			}
+
 			void	_init()
 			{
 				_end = _node_alloc.allocate(1);
@@ -565,15 +576,22 @@ namespace ft
 
 			void	_destroy_from_root(map_node* node)
 			{
-				if (empty() || node == _end)
+				if (empty())
 				{
-					_delete_node(_rend);
+						_delete_node(_rend);
+						_delete_node(_end);
+				}
+				else if (node == _end)
+				{
 					_delete_node(_end);
+					return ;
 				}
 				else if (node != NULL)
 				{
-					_destroy_from_root(node->left);
-					_destroy_from_root(node->right);
+					if (node->left)
+						_destroy_from_root(node->left);
+					if (node->right)
+						_destroy_from_root(node->right);
 					_delete_node(node);
 				}
 			}
