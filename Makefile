@@ -26,23 +26,20 @@ INCS_DIR		=	incs
 
 INCS			=	$(INCLUDES)
 OBJS			=	$(SOURCES:.cpp=.o)
-STD_OBJS		=	$(TESTS_SOURCES:.cpp=.o)
 
 CC				=	@clang++
-FLAGS			=	-Wall -Wextra -Werror -std=c++98 -g
+FLAGS			=	-Wall -Wextra -Werror -std=c++98 -g3
 
 all: $(FT_NAME)
 
 $(FT_NAME): $(INCS) $(OBJS)
 	@printf "$(ERASE)$(BLUE)$(FT_NAME):$(GREEN) Compiling FT project.\n$(RESET)"
 	@$(CC) $(FLAGS) -I $(INCS_DIR) -o $(FT_NAME) $(OBJS)
-	@mkdir .objs && mv $(OBJS) .objs
 	@printf "$(ERASE)$(BLUE)$(FT_NAME):$(GREEN) Project compiled.\n$(RESET)"
 
 $(STD_NAME): $(INCS) $(STD_OBJS)
 	@printf "$(ERASE)$(BLUE)$(STD_NAME):$(GREEN) Compiling STD project.\n$(RESET)"
-	@$(CC) $(FLAGS) -I $(INCS_DIR) -o $(STD_NAME) $(STD_OBJS)
-	@mv $(STD_OBJS) .objs
+	@$(CC) $(FLAGS) -I $(INCS_DIR) -o $(STD_NAME) $(OBJS)
 	@printf "$(ERASE)$(BLUE)$(STD_NAME):$(GREEN) Project compiled.\n$(RESET)"
 
 %.o: %.cpp $(INCS)
@@ -51,7 +48,8 @@ $(STD_NAME): $(INCS) $(STD_OBJS)
 
 clean:
 	@printf "$(BLUE)$(FT_NAME):$(GREEN) Removing objects.\n$(RESET)"
-	@rm -rf .objs
+	@rm -rf tests/*/*.o
+	@rm -rf tests/main.o
 
 fclean: clean
 	@printf "$(BLUE)$(FT_NAME):$(GREEN) Cleaning project.\n$(RESET)"
@@ -61,13 +59,12 @@ re:	gmk fclean all
 
 gmk:
 	@printf "$(BLUE)$(FT_NAME):$(GREEN) Generating Makefile includes.\n$(RESET)"
-	@find tests/ft/*/*.cpp | sed 's/^/SOURCES += /' > sources.mk && echo "SOURCES += tests/ft/main.cpp" >> sources.mk
+	@find tests/*/*.cpp | sed 's/^/SOURCES += /' > sources.mk && echo "SOURCES += tests/main.cpp" >> sources.mk
 	@find incs/*/*.hpp | sed 's/^/INCLUDES += /' > includes.mk
 
 gmk_diff:
 	@printf "$(BLUE)$(FT_NAME):$(GREEN) Generating Makefile includes.\n$(RESET)"
-	@find tests/ft/*/*.cpp | sed 's/^/SOURCES += /' > sources.mk && echo "SOURCES += tests/ft/main.cpp" >> sources.mk
-	@find tests/std/*/*.cpp | sed 's/^/TESTS_SOURCES += /' > tests_sources.mk && echo "TESTS_SOURCES += tests/std/std_main.cpp" >> tests_sources.mk
+	@find tests/*/*.cpp | sed 's/^/SOURCES += /' > sources.mk && echo "SOURCES += tests/main.cpp" >> sources.mk
 	@find incs/*/*.hpp | sed 's/^/INCLUDES += /' > includes.mk
 
 diff: $(FT_NAME) $(STD_NAME)

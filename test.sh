@@ -3,7 +3,6 @@
 if [ "$1" = "clear" ]; then
 	rm -f includes.mk
 	rm -f sources.mk
-	rm -f tests_sources.mk
 	rm -f ft_logs.txt
 	rm -f std_logs.txt
 	rm -f diff.txt

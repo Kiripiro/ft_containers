@@ -119,11 +119,14 @@ namespace ft
 			if (!empty())
 				_destroy_from_root(_root);
 			_init();
+			print_tree_structure(x._root, 0);
 			_alloc = x._alloc;
 			_node_alloc = x._node_alloc;
 			_compare = x._compare;
-			_size = 0;
-			insert(x.begin(), x.end());
+			_size = x._size;
+			_pre_order_insert(_root, x._root, x._end);
+		//	insert(x.begin(), x.end());
+		//	print_tree_structure(_root, 0);
 			return *this;
 		}
 
@@ -593,6 +596,60 @@ namespace ft
 					if (node->right)
 						_destroy_from_root(node->right);
 					_delete_node(node);
+				}
+			}
+
+			map_node*	_create_node(const value_type &val)
+			{
+				map_node	*tmp = _node_alloc.allocate(1);
+
+				_node_alloc.construct(tmp, map_node(val));
+				return (tmp);
+			}
+
+			void	_set_begin_or_end(map_node* current_node)
+			{
+				if (!_root)
+				{
+					std::cout << "NO ROOT" << std::endl;
+					_root = _node_alloc.allocate(1);
+					_node_alloc.construct(_root, map_node(current_node->value));
+
+					_end->color = BLACK;
+					_rend->color = BLACK;
+					_root->color = BLACK;
+					_root->left = _rend;
+					_root->right = _end;
+					_end->parent = _root;
+					_rend->parent = _root;
+					std::cout << "ROOT VALUE: " << _root->value.first << std::endl;
+				}
+				else if (_compare(current_node->value.first, _end->parent->value.first))
+				{
+					std::cout << "left: current_node:" << current_node->value.first << std::endl;
+					current_node->right = _end;
+					_end->parent = current_node;
+				}
+				else if (current_node != NULL)
+				{
+					std::cout << "right: current_node:" << current_node->value.first << std::endl;
+					current_node->right = _rend;
+					_rend = current_node;
+				}
+			}
+
+			void	_pre_order_insert(map_node *current_node, map_node *node_to_copy, map_node *copy_end_node, map_node *parent_node = NULL)
+			{
+				if (node_to_copy != NULL && node_to_copy != copy_end_node)
+				{
+					current_node = _create_node(node_to_copy->value);
+					current_node->parent = parent_node;
+					current_node->color = node_to_copy->color;
+					_set_begin_or_end(current_node);
+					if (node_to_copy->left)
+						_pre_order_insert(current_node->left, node_to_copy->left, copy_end_node, current_node);
+					if (node_to_copy->right)
+						_pre_order_insert(current_node->right, node_to_copy->right, copy_end_node, current_node);
 				}
 			}
 
