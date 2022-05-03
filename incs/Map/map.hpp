@@ -8,6 +8,8 @@
 #include "RBT.hpp"
 #include "map_reverse_iterator.hpp"
 
+#define AFF(thing) (std::cout << thing << std::endl)
+
 namespace ft
 {
 	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> > >
@@ -90,16 +92,8 @@ namespace ft
 			this->insert(first, last);
 		}
 
-		map(const map &x)
+		map(const map &x): _root(NULL), _end(NULL), _rend(NULL), _size(0)
 		{
-			_end = _node_alloc.allocate(1);
-			_node_alloc.construct(_end, map_node());
-
-			_rend = _node_alloc.allocate(1);
-			_node_alloc.construct(_rend, map_node());
-
-			_rend->parent = _end;
-			_root = NULL;
 			*this = x;
 		}
 
@@ -110,6 +104,8 @@ namespace ft
 			_node_alloc.deallocate(_end, 1);
 			_node_alloc.destroy(_rend);
 			_node_alloc.deallocate(_rend, 1);
+			_rend = NULL;
+			_end = NULL;
 		}
 
 		map &operator= (const map &x)
@@ -119,14 +115,11 @@ namespace ft
 			if (!empty())
 				_destroy_from_root(_root);
 			_init();
-			print_tree_structure(x._root, 0);
 			_alloc = x._alloc;
 			_node_alloc = x._node_alloc;
 			_compare = x._compare;
 			_size = x._size;
-			_pre_order_insert(_root, x._root, x._end);
-		//	insert(x.begin(), x.end());
-		//	print_tree_structure(_root, 0);
+			insert(x.begin(), x.end());
 			return *this;
 		}
 
@@ -180,9 +173,7 @@ namespace ft
 
 		bool empty(void) const
 		{
-			if (_size == 0)
-				return 1;
-			return 0;
+			return (_size == 0);
 		}
 
 		size_type size(void) const
@@ -319,16 +310,16 @@ namespace ft
 				if (z->left == NULL)
 				{
 					x = z->right;
-					_swapNodes(z, z->right);
+					_swap_nodes(z, z->right);
 				}
 				else if (z->right == NULL)
 				{
 					x = z->left;
-					_swapNodes(z, z->left);
+					_swap_nodes(z, z->left);
 				}
 				else
 				{
-					y = find_min(z->right);
+					y = _find_min(z->right);
 					y_original_color = y->color;
 					x = y->right;
 					if (x != NULL && y->parent == z)
@@ -337,12 +328,12 @@ namespace ft
 					}
 					else if (z->right != NULL)
 					{
-						_swapNodes(y, y->right);
+						_swap_nodes(y, y->right);
 						y->right = z->right;
 						if (z->right != NULL)
 							z->right->parent = y;
 					}
-					_swapNodes(z, y);
+					_swap_nodes(z, y);
 					y->left = z->left;
 					if (y->left != NULL)
 						y->left->parent = y;
@@ -359,7 +350,7 @@ namespace ft
 					y->right = NULL;
 				}
 				if (y_original_color == BLACK && x != NULL)
-					_eraseCorrection(x);
+					_erase_fix(x);
 				return ;
 		}
 
@@ -543,18 +534,18 @@ namespace ft
 		}
 
 		private:
-			void print_tree_structure(map_node *node, int spaces)
+			void _print_tree_structure(map_node *node, int spaces)
 			{
 				if (node != NULL)
 				{
-					print_tree_structure(node->right, spaces + 5);
+					_print_tree_structure(node->right, spaces + 5);
 					for (int i = 0; i < spaces; i++)
 						std::cout << ' ';
 						if (node->color == RED)
 							std::cout << "  \033[31m" << node->value.first << "\033[0m" << std::endl;
 						else
 							std::cout << "   " << node->value.first << std::endl;
-					print_tree_structure(node->left, spaces + 5);
+					_print_tree_structure(node->left, spaces + 5);
 				}
 			}
 
@@ -607,53 +598,7 @@ namespace ft
 				return (tmp);
 			}
 
-			void	_set_begin_or_end(map_node* current_node)
-			{
-				if (!_root)
-				{
-					std::cout << "NO ROOT" << std::endl;
-					_root = _node_alloc.allocate(1);
-					_node_alloc.construct(_root, map_node(current_node->value));
-
-					_end->color = BLACK;
-					_rend->color = BLACK;
-					_root->color = BLACK;
-					_root->left = _rend;
-					_root->right = _end;
-					_end->parent = _root;
-					_rend->parent = _root;
-					std::cout << "ROOT VALUE: " << _root->value.first << std::endl;
-				}
-				else if (_compare(current_node->value.first, _end->parent->value.first))
-				{
-					std::cout << "left: current_node:" << current_node->value.first << std::endl;
-					current_node->right = _end;
-					_end->parent = current_node;
-				}
-				else if (current_node != NULL)
-				{
-					std::cout << "right: current_node:" << current_node->value.first << std::endl;
-					current_node->right = _rend;
-					_rend = current_node;
-				}
-			}
-
-			void	_pre_order_insert(map_node *current_node, map_node *node_to_copy, map_node *copy_end_node, map_node *parent_node = NULL)
-			{
-				if (node_to_copy != NULL && node_to_copy != copy_end_node)
-				{
-					current_node = _create_node(node_to_copy->value);
-					current_node->parent = parent_node;
-					current_node->color = node_to_copy->color;
-					_set_begin_or_end(current_node);
-					if (node_to_copy->left)
-						_pre_order_insert(current_node->left, node_to_copy->left, copy_end_node, current_node);
-					if (node_to_copy->right)
-						_pre_order_insert(current_node->right, node_to_copy->right, copy_end_node, current_node);
-				}
-			}
-
-			map_node *find_min(map_node *n)
+			map_node *_find_min(map_node *n)
 			{
 				assert(n != NULL);
 				map_node *tmp = n;
@@ -662,7 +607,7 @@ namespace ft
 				return tmp;
 			}
 
-			void _swapNodes(map_node *u, map_node *v)
+			void _swap_nodes(map_node *u, map_node *v)
 			{
 				if (u->parent == NULL)
 					_root = v;
@@ -778,7 +723,7 @@ namespace ft
 				_root->color = BLACK;
 			}
 
-			void _eraseCorrection(map_node *n)
+			void _erase_fix(map_node *n)
 			{
 				map_node *tmp = n;
 				map_node *w = n;

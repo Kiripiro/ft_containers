@@ -11,7 +11,7 @@ if [ "$1" = "clear" ]; then
 fi
 
 if [ -n "$(find .objs -type f 2>/dev/null)" ]; then
-	make fclean
+	make
 fi
 echo 'Run program using "leaks --atExit" ? Yes: "y", No: "n".'
 read -n 1 -p "Input election: " leaks
